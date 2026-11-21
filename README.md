@@ -10,41 +10,47 @@ DPL Screening Skill helps researchers choose which protein candidates to test ag
 
 ## Installation
 
-**1. Install the skill locally.** From the repository root, copy the complete `dpl-screening` directory into your Codex user skills directory. The folder includes the [skill instructions](.agents/skills/dpl-screening/SKILL.md), controller and model runners. The repository also provides a [server configuration template](config/server.example.json).
+### Step 1. Install the Skill locally in Codex
 
-Windows PowerShell:
-
-```powershell
-$skillsDir = Join-Path $HOME '.agents/skills'
-New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
-Copy-Item -Recurse -Path .agents/skills/dpl-screening -Destination $skillsDir
-```
-
-Linux or macOS:
-
-```bash
-mkdir -p "$HOME/.agents/skills"
-cp -R .agents/skills/dpl-screening "$HOME/.agents/skills/"
-```
-
-**2. Deploy to the server project.** Run these commands from the same local repository root. Replace `gpu-server` with your SSH host alias or `user@hostname`. This example creates `~/dpl-project` on the server and uploads the skill, configuration template and example input.
+On your workstation, clone the repository and enter its root directory:
 
 ```sh
-ssh gpu-server 'mkdir -p dpl-project/.agents/skills dpl-project/config dpl-project/examples'
-scp -r .agents/skills/dpl-screening gpu-server:dpl-project/.agents/skills/
-scp config/server.example.json gpu-server:dpl-project/config/
-scp examples/proteins.fasta gpu-server:dpl-project/examples/
+git clone https://github.com/yatougami/DPL-Screening-Skill.git
+cd DPL-Screening-Skill
 ```
 
-**3. Open the remote project in Codex.** Connect to the same host using Codex Remote SSH and open `~/dpl-project`. Codex handles the SSH connection. The deployed skill runs commands inside that server project using the server's files, model environments and GPU allocation.
+Copy the contents of `.agents/skills/dpl-screening/` into your Codex user skills directory using the commands for your operating system.
 
-## Quick Start
+**Windows (PowerShell)** — install to `%USERPROFILE%\.agents\skills\dpl-screening\`:
 
-Open `~/dpl-project` on the GPU server through Codex Remote SSH. From the remote project root, create the configuration from the deployed template:
+```powershell
+$skillDir = Join-Path $env:USERPROFILE '.agents\skills\dpl-screening'
+New-Item -ItemType Directory -Force -Path $skillDir | Out-Null
+Get-ChildItem -LiteralPath '.agents/skills/dpl-screening' -Force |
+    Copy-Item -Destination $skillDir -Recurse -Force
+```
+
+**Linux or macOS** — install to `~/.agents/skills/dpl-screening/`:
 
 ```bash
+skill_dir="$HOME/.agents/skills/dpl-screening"
+mkdir -p "$skill_dir"
+cp -R .agents/skills/dpl-screening/. "$skill_dir/"
+```
+
+After the copy, `SKILL.md` should sit directly inside the installed `dpl-screening` directory alongside `scripts/`. Reload or restart Codex so it can discover `$dpl-screening`.
+
+### Step 2. Deploy the project on the GPU server
+
+In a terminal on the GPU server, clone the full repository and create the server configuration:
+
+```bash
+git clone https://github.com/yatougami/DPL-Screening-Skill.git
+cd DPL-Screening-Skill
 cp -n config/server.example.json config/server.json
 ```
+
+The server checkout includes the project skill in `.agents/skills/dpl-screening/`, its controller and the example inputs.
 
 Edit `config/server.json` and replace the example paths with **absolute paths on the server**. For each model, set `python` to the full path of the Python executable inside its Conda environment. Set each `gpu` to the device index for your allocation. Keep `execution.mode` set to `sequential`. [Configuration template](config/server.example.json)
 
@@ -53,6 +59,12 @@ Edit `config/server.json` and replace the example paths with **absolute paths on
 | `af3` | Python interpreter in the Conda environment configured for AF3 | `model_dir` for the AF3 parameters |
 | `boltz2` | Python interpreter in the Conda environment configured for Boltz-2 | `boltz` executable beside the interpreter, plus `checkpoint_path`, `affinity_checkpoint_path` and `cache_dir` |
 | `chai1` | Python interpreter in the Conda environment configured for Chai-1 | `weights_dir` for the Chai-1 weights |
+
+### Step 3. Connect Codex to the GPU server
+
+From your local Codex app, connect to the GPU server using Remote SSH and open the server checkout’s `DPL-Screening-Skill` directory. In that remote project chat, invoke `$dpl-screening` with the server paths to your inputs and configuration, as shown in [Quick Start](#quick-start). Codex manages the SSH connection and runs `.agents/skills/dpl-screening/scripts/dpl.py` on the server, where the controller uses the configured model environments and writes the screening results. [Skill instructions](.agents/skills/dpl-screening/SKILL.md)
+
+## Quick Start
 
 **In the remote Codex chat**, try the bundled [six-sequence FASTA](examples/proteins.fasta) with ethanol (`CCO`) as an example ligand:
 
