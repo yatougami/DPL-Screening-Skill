@@ -1,0 +1,47 @@
+# Screening work directories and outputs
+runs/
+*_screening/
+results/
+run_info/
+test_log/
+**/af3/input/
+**/af3/output/
+**/boltz2/input/
+**/boltz2/output/
+**/chai1/input/
+**/chai1/output/
+selected_sequences.csv
+selected_sequences.fasta
+*.pdb
+*.cif
+*.npz
+
+# Logs and temporary files
+*.log
+*.out
+*.err
+*.tmp
+*.bak
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Model weights and caches
+weights/
+checkpoints/
+.cache/
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+
+# Local configuration and credentials
+/config/server.json
+.env
+.env.*
+!.env.example
+.ssh/
+*.pem
+*.key
+id_rsa
+id_ed25519

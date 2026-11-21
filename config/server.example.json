@@ -1,0 +1,23 @@
+{
+  "execution": {
+    "mode": "sequential",
+    "seconds_per_sample": {}
+  },
+  "af3": {
+    "python": "/path/to/alphafold3-env/bin/python",
+    "model_dir": "/path/to/alphafold3/parameters",
+    "gpu": 0
+  },
+  "boltz2": {
+    "python": "/path/to/boltz2-env/bin/python",
+    "checkpoint_path": "/path/to/boltz2_conf.ckpt",
+    "affinity_checkpoint_path": "/path/to/boltz2_aff.ckpt",
+    "cache_dir": "/path/to/boltz2/cache",
+    "gpu": 0
+  },
+  "chai1": {
+    "python": "/path/to/chai1-env/bin/python",
+    "weights_dir": "/path/to/chai1/weights",
+    "gpu": 0
+  }
+}

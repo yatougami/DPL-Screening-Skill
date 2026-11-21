@@ -1,0 +1,5 @@
+# Auxiliary tools: check existing environments first. Install only into an explicitly approved task-local venv.
+PyYAML>=6.0
+numpy>=1.24
+pandas>=2.0
+rdkit>=2023.9.1
